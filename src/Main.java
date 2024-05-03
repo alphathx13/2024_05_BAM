@@ -27,8 +27,13 @@ public class Main {
 				
 				System.out.println("글 번호 \t 글 제목 \t 글 내용");
 				
-				for(Article article : articles) {
-					System.out.printf("%d \t\t %s \t\t %s\n", article.article_number, article.title, article.body);
+//				for(Article article : articles) {
+//					System.out.printf("%d \t\t %s \t\t %s\n", article.article_number, article.title, article.body);
+//				}
+				
+				for(int i = articles.size()-1; i >= 0; i--) {
+					Article article = articles.get(i);
+					System.out.printf("%d \t\t %s \t\t %s\n", article.article_number, article.title, article.body);					
 				}
 			}
 			
