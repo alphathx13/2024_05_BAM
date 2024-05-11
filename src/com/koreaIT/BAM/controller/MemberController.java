@@ -80,7 +80,7 @@ public class MemberController {
 
 		members.add(new Member(member_number, id, pass, name));
 
-		System.out.printf("[%s]번 회원님이 가입되었습니다.\n", id);
+		System.out.printf("[%s]님의 가입을 축하드립니다.\n", name);
 		member_number++;
 	}
 
@@ -104,17 +104,59 @@ public class MemberController {
 		for (int i = members.size() - 1; i >= 0; i--) {
 			Member member = members.get(i);
 			System.out.printf("%d \t\t %s \t\t %s \t\t %s\n", member.getMember_number(), member.getId(),
-					member.getName(),
-					member.getReg_time().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					member.getName(), member.getReg_time().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		}
-		
+
 	}
-	
+
+	public boolean member_check(Scanner sc) {
+		String input_id;
+		String input_pass;
+
+		while (true) {
+			System.out.print("아이디) ");
+			input_id = sc.nextLine().trim();
+			System.out.print("비밀번호) ");
+			input_pass = sc.nextLine().trim();
+
+			for (Member member : members) {
+				if (member.getId().equals(input_id)) {
+					if (member.getPass().equals(input_pass)) {
+						System.out.println(member.getName() + "님 로그인을 환영합니다.");
+						return true;
+					}
+				}
+			}
+
+			System.out.println("해당 계정은 존재하지 않습니다.");
+			continue;
+		}
+	}
+
+	public void start() {
+		String cmd;
+
+		while (true) {
+			System.out.print("login / register) ");
+			cmd = sc.nextLine().trim();
+
+			if (cmd.equals("login")) {
+				this.member_check(sc);
+			} else if (cmd.equals("register")) {
+				this.join();
+				continue;
+			} else {
+				System.out.println("다시 입력해주세요");
+				continue;
+			}
+			
+			break;
+		}
+	}
+
 	public void test_member() {
 		for (int i = 1; i <= 5; i++)
 			members.add(new Member((member_number++), "user" + i, "user" + i, "유저" + i));
 
-		System.out.println("테스트 멤버 5명 생성 완료");
-		
 	}
 }

@@ -31,8 +31,6 @@ public class ArticleController {
 
 	public void list(String cmd) {
 		List<Article> list_search = new ArrayList<>();
-		
-		System.out.println(cmd.substring("article list".length()).trim());
 
 		if (cmd.length() == 12) 
 			list_search = articles;
@@ -155,13 +153,6 @@ public class ArticleController {
 
 		return Integer.parseInt(cmds[cmds.length - 1]);
 	}
-	
-	public void test_article() {
-		for (int i = 1; i <= 5; i++)
-			articles.add(new Article((last_number++), "제목 " + i, "내용 " + i, i * 10));
-
-		System.out.println("테스트 게시글 5개 생성 완료");
-	}
 
 	private String[] getTitleBody() {
 		String[] result = new String[2];
@@ -191,6 +182,11 @@ public class ArticleController {
 		}
 
 		return result;
+	}
+	
+	public void test_article() {
+		for (int i = 1; i <= 5; i++)
+			articles.add(new Article((last_number++), "제목 " + i, "내용 " + i, i * 10));
 	}
 
 }

@@ -12,14 +12,18 @@ public class App {
 		System.out.println("== 프로그램 시작 ==");
 
 		Scanner sc = new Scanner(System.in);
-		
+
 		MemberController memberController = new MemberController(sc);
 		memberController.test_member();
-		
+
 		ArticleController articleController = new ArticleController(sc);
 		articleController.test_article();
 
+		System.out.println("게시판에 접속하신것을 환영합니다.");
+		memberController.start();
+
 		while (true) {
+
 			System.out.print("명령어) : ");
 			cmd = sc.nextLine().trim();
 
@@ -42,7 +46,7 @@ public class App {
 				articleController.write();
 			}
 
-			// 게시글 조회
+			// 게시글 조회 및 검색
 			else if (cmd.startsWith("article list")) {
 				articleController.list(cmd);
 			}
@@ -55,7 +59,6 @@ public class App {
 			// 게시글 수정
 			else if (cmd.startsWith("article modify ")) {
 				articleController.modify(cmd);
-				
 			}
 
 			// 게시글 삭제
