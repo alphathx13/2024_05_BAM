@@ -8,31 +8,54 @@ import java.util.ArrayList;
 import com.koreaIT.BAM.dto.Article;
 import com.koreaIT.BAM.util.Util;
 
-public class ArticleController {
-	private int last_number;
+public class ArticleController extends Controller {
 	private List<Article> articles;
-	private Scanner sc;
 
 	public ArticleController(Scanner sc) {
 		this.sc = sc;
-		this.last_number = 1;
+		this.last_id = 1;
 		this.articles = new ArrayList<>();
 	}
 
-	public void write() {
-		String[] title_body = this.getTitleBody();
+	@Override
+	public void cmd_check(String cmd, String method_name) {
+		this.cmd = cmd;
 
-		articles.add(new Article(last_number, title_body[0], title_body[1], 0));
-
-		System.out.printf("%d번 글이 생성 되었습니다.\n", this.last_number);
-
-		this.last_number++;
+		switch (method_name) {
+		case "write":
+			this.article_write();
+			break;
+		case "list":
+			this.article_list();
+			break;
+		case "detail":
+			this.article_detail();
+			break;
+		case "modify":
+			this.article_modify();
+			break;
+		case "delete":
+			this.article_delete();
+			break;
+		default:
+			System.out.println("명령어를 다시 입력해 주세요.");
+		}
 	}
 
-	public void list(String cmd) {
+	private void article_write() {
+		String[] title_body = this.getTitleBody();
+
+		articles.add(new Article(last_id, title_body[0], title_body[1], 0));
+
+		System.out.printf("%d번 글이 생성 되었습니다.\n", this.last_id);
+
+		this.last_id++;
+	}
+
+	private void article_list() {
 		List<Article> list_search = new ArrayList<>();
 
-		if (cmd.length() == 12) 
+		if (cmd.length() == 12)
 			list_search = articles;
 
 		else {
@@ -62,7 +85,7 @@ public class ArticleController {
 
 	}
 
-	public void detail(String cmd) {
+	private void article_detail() {
 		int num = this.getNum(cmd);
 		Article found_article = this.getArticle(num);
 
@@ -85,7 +108,7 @@ public class ArticleController {
 
 	}
 
-	public void modify(String cmd) {
+	private void article_modify() {
 		int num = this.getNum(cmd);
 		Article found_article = this.getArticle(num);
 
@@ -106,7 +129,7 @@ public class ArticleController {
 
 	}
 
-	public void delete(String cmd) {
+	private void article_delete() {
 		int num = this.getNum(cmd);
 		Article found_article = this.getArticle(num);
 
@@ -183,10 +206,13 @@ public class ArticleController {
 
 		return result;
 	}
-	
-	public void test_article() {
-		for (int i = 1; i <= 5; i++)
-			articles.add(new Article((last_number++), "제목 " + i, "내용 " + i, i * 10));
-	}
 
+
+	@Override
+	public void test_data() {
+		for (int i = 1; i <= 5; i++)
+			articles.add(new Article((last_id++), "제목 " + i, "내용 " + i, i * 10));
+
+		System.out.println("테스트 게시글 5개 생성 완료");
+	}
 }

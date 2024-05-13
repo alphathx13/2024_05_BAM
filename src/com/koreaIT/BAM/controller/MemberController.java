@@ -7,19 +7,80 @@ import java.util.Scanner;
 
 import com.koreaIT.BAM.dto.Member;
 
-public class MemberController {
-
-	private Scanner sc;
-	private int member_number;
+public class MemberController extends Controller {
+	private Member login_member;
 	private List<Member> members;
 
 	public MemberController(Scanner sc) {
+		this.login_member = null;
 		this.sc = sc;
-		this.member_number = 1;
+		this.last_id = 1;
 		this.members = new ArrayList<>();
+	}	
+
+
+
+	public Member getLogin_member() {
+		return login_member;
 	}
 
-	public void join() {
+	@Override
+	public void cmd_check(String cmd, String method_name) {
+
+		switch (method_name) {
+		case "join":
+			this.member_join();
+			break;
+		case "list":
+			this.member_list();
+			break;
+		case "login":
+			this.login();
+			break;
+		case "logout":
+			this.logout();
+			break;
+		default:
+			System.out.println("명령어를 다시 입력해 주세요.");
+		}
+	}
+	
+	private void login() {
+		if (login_member != null) {
+			System.out.printf("이미 '%s'님이 로그인 되어있습니다.\n", login_member);
+			return;
+		}
+		
+		String input_id;
+		String input_pass;
+
+		System.out.print("아이디 ) ");
+		input_id = sc.nextLine().trim();
+		System.out.print("비밀번호 ) ");
+		input_pass = sc.nextLine().trim();
+
+		for (Member member : members) {
+			if (member.getId().equals(input_id)) {
+				if (member.getPass().equals(input_pass)) {
+					System.out.println(member.getName() + "님 로그인을 환영합니다.");
+					login_member = member;
+					return;
+				} else {
+					System.out.println("암호가 일치하지 않습니다.");
+					return;
+				}
+			}
+		}
+		
+		System.out.println("해당 ID는 존재하지 않습니다. 회원가입을 해주세요.");
+	}
+	
+	private void logout() {
+		System.out.printf("%s님 로그아웃 되었습니다.\n", login_member);
+		login_member = null;
+	}
+
+	public void member_join() {
 		String id = null;
 		String pass = null;
 		String name = null;
@@ -34,7 +95,7 @@ public class MemberController {
 				continue;
 			}
 
-			if (id_check(id) == false) {
+			if (id_dp_check(id) == false) {
 				System.out.println("해당 ID는 이미 존재합니다. 다시 입력해주세요");
 				continue;
 			}
@@ -78,13 +139,13 @@ public class MemberController {
 			break;
 		}
 
-		members.add(new Member(member_number, id, pass, name));
+		members.add(new Member(last_id, id, pass, name));
 
-		System.out.printf("[%s]님의 가입을 축하드립니다.\n", name);
-		member_number++;
+		System.out.printf("[%s]번 회원님이 가입되었습니다.\n", id);
+		last_id++;
 	}
 
-	private boolean id_check(String id) {
+	private boolean id_dp_check(String id) {
 		for (Member member : members) {
 			if (member.getId().equals(id)) {
 				return false;
@@ -93,7 +154,7 @@ public class MemberController {
 		return true;
 	}
 
-	public void list() {
+	private void member_list() {
 		if (members.size() == 0) {
 			System.out.println("회원이 존재하지 않습니다.");
 			return;
@@ -109,54 +170,11 @@ public class MemberController {
 
 	}
 
-	public boolean member_check(Scanner sc) {
-		String input_id;
-		String input_pass;
-
-		while (true) {
-			System.out.print("아이디) ");
-			input_id = sc.nextLine().trim();
-			System.out.print("비밀번호) ");
-			input_pass = sc.nextLine().trim();
-
-			for (Member member : members) {
-				if (member.getId().equals(input_id)) {
-					if (member.getPass().equals(input_pass)) {
-						System.out.println(member.getName() + "님 로그인을 환영합니다.");
-						return true;
-					}
-				}
-			}
-
-			System.out.println("해당 계정은 존재하지 않습니다.");
-			continue;
-		}
-	}
-
-	public void start() {
-		String cmd;
-
-		while (true) {
-			System.out.print("login / register) ");
-			cmd = sc.nextLine().trim();
-
-			if (cmd.equals("login")) {
-				this.member_check(sc);
-			} else if (cmd.equals("register")) {
-				this.join();
-				continue;
-			} else {
-				System.out.println("다시 입력해주세요");
-				continue;
-			}
-			
-			break;
-		}
-	}
-
-	public void test_member() {
+	@Override
+	public void test_data() {
 		for (int i = 1; i <= 5; i++)
-			members.add(new Member((member_number++), "user" + i, "user" + i, "유저" + i));
+			members.add(new Member((last_id++), "user" + i, "user" + i, "유저" + i));
 
+		System.out.println("테스트 멤버 5명 생성 완료");
 	}
 }

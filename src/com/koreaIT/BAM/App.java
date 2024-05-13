@@ -14,66 +14,86 @@ public class App {
 		Scanner sc = new Scanner(System.in);
 
 		MemberController memberController = new MemberController(sc);
-		memberController.test_member();
+		memberController.test_data();
 
 		ArticleController articleController = new ArticleController(sc);
-		articleController.test_article();
-
-		System.out.println("게시판에 접속하신것을 환영합니다.");
-		memberController.start();
+		articleController.test_data();
 
 		while (true) {
+			if (memberController.getLogin_member() != null)
+				System.out.printf("%s - 명령어) : ", memberController.getLogin_member());
+			else
+				System.out.print("명령어) : ");
 
-			System.out.print("명령어) : ");
 			cmd = sc.nextLine().trim();
 
-			if (cmd.equals("exit")) {
+			String[] cmds = cmd.split(" ");
+
+			if (cmd.equals("exit"))
 				break;
-			}
 
-			// 회원 가입
-			else if (cmd.equals("member join")) {
-				memberController.join();
-			}
+			String controller_name = cmds[0];
+			String method_name = cmds[1];
 
-			// 멤버 리스트
-			else if (cmd.equals("member list")) {
-				memberController.list();
-			}
+			Controller controller = null;
 
-			// 게시글 작성
-			else if (cmd.equals("article write")) {
-				articleController.write();
-			}
-
-			// 게시글 조회 및 검색
-			else if (cmd.startsWith("article list")) {
-				articleController.list(cmd);
-			}
-
-			// 게시글 상세 조회
-			else if (cmd.startsWith("article detail ")) {
-				articleController.detail(cmd);
-			}
-
-			// 게시글 수정
-			else if (cmd.startsWith("article modify ")) {
-				articleController.modify(cmd);
-			}
-
-			// 게시글 삭제
-			else if (cmd.startsWith("article delete ")) {
-				articleController.delete(cmd);
-			}
-
-			else {
+			if (controller_name.equals("article")) {
+				controller = articleController;
+			} else if (controller_name.equals("member")) {
+				controller = memberController;
+			} else {
 				System.out.println("명령어를 다시 입력해 주세요.");
+				continue;
 			}
+
+			controller.cmd_check(cmd, method_name);
+
+//			String[] cmds = input(sc);
+//
+//			Controller controller = null;
+//			
+//			if (cmds[0].equals("exit")) {
+//				break;
+//			} else if (cmds[0].equals("article")) {
+//				controller = articleController;
+//			} else if (cmds[0].equals("member")) {
+//				controller = memberController;
+//			} else {
+//				System.out.println("명령어를 다시 입력해 주세요.");
+//				continue;
+//			}
+//			
+//			controller.cmd_check(cmds[1], cmds[2]);
 		}
 
 		sc.close();
-
 		System.out.println("== 프로그램 종료 ==");
-
 	}
+
+//	private String[] input(Scanner sc) {
+//		while (true) {
+//			boolean error = false;
+//			
+//			System.out.print("명령어) : ");
+//			String cmd = sc.nextLine();
+//			String[] cmds = cmd.trim().split(" ");
+//
+//			for (int i = 2; i < cmds.length - 1; i++) {
+//				if (!cmds[i].equals("")) {
+//					error = true;
+//					break;
+//				}
+//			}
+//
+//			if (!cmds[cmds.length - 1].chars().allMatch(Character::isDigit))
+//				error = true;
+//
+//			if (error == true) {
+//				System.out.println("명령어를 다시 입력해주세요.");
+//				continue;
+//			}
+//
+//			return cmds;
+//		}
+//	}
 }
