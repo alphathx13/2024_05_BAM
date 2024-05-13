@@ -18,14 +18,12 @@ public class MemberController extends Controller {
 		this.members = new ArrayList<>();
 	}	
 
-
-
 	public Member getLogin_member() {
 		return login_member;
 	}
 
 	@Override
-	public void cmd_check(String cmd, String method_name) {
+	public void cmd_check(String cmd, String method_name, Member login_member) {
 
 		switch (method_name) {
 		case "join":
@@ -76,7 +74,7 @@ public class MemberController extends Controller {
 	}
 	
 	private void logout() {
-		System.out.printf("%s님 로그아웃 되었습니다.\n", login_member);
+		System.out.printf("%s님이 로그아웃 되었습니다.\n", login_member.getName());
 		login_member = null;
 	}
 

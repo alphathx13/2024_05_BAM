@@ -21,7 +21,7 @@ public class App {
 
 		while (true) {
 			if (memberController.getLogin_member() != null)
-				System.out.printf("%s - 명령어) : ", memberController.getLogin_member());
+				System.out.printf("%s - 명령어) : ", memberController.getLogin_member().getName());
 			else
 				System.out.print("명령어) : ");
 
@@ -46,7 +46,7 @@ public class App {
 				continue;
 			}
 
-			controller.cmd_check(cmd, method_name);
+			controller.cmd_check(cmd, method_name, memberController.getLogin_member());
 
 //			String[] cmds = input(sc);
 //

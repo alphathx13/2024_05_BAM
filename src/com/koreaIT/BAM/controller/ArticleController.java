@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import com.koreaIT.BAM.dto.Article;
+import com.koreaIT.BAM.dto.Member;
 import com.koreaIT.BAM.util.Util;
 
 public class ArticleController extends Controller {
@@ -18,12 +19,12 @@ public class ArticleController extends Controller {
 	}
 
 	@Override
-	public void cmd_check(String cmd, String method_name) {
+	public void cmd_check(String cmd, String method_name, Member login_member) {
 		this.cmd = cmd;
 
 		switch (method_name) {
 		case "write":
-			this.article_write();
+			this.article_write(login_member);
 			break;
 		case "list":
 			this.article_list();
@@ -32,20 +33,25 @@ public class ArticleController extends Controller {
 			this.article_detail();
 			break;
 		case "modify":
-			this.article_modify();
+			this.article_modify(login_member);
 			break;
 		case "delete":
-			this.article_delete();
+			this.article_delete(login_member);
 			break;
 		default:
 			System.out.println("명령어를 다시 입력해 주세요.");
 		}
 	}
 
-	private void article_write() {
+	private void article_write(Member login_member) {
+		if (login_member == null) {
+			System.out.println("글쓰기는 로그인이후에 사용할 수 있습니다.");
+			return;
+		}
+		
 		String[] title_body = this.getTitleBody();
 
-		articles.add(new Article(last_id, title_body[0], title_body[1], 0));
+		articles.add(new Article(last_id, title_body[0], title_body[1], login_member.getName(),0));
 
 		System.out.printf("%d번 글이 생성 되었습니다.\n", this.last_id);
 
@@ -72,15 +78,12 @@ public class ArticleController extends Controller {
 			return;
 		}
 
-		System.out.println("글 번호 \t 글 제목 \t\t 글 내용 \t\t 글 작성시간 \t\t\t 글 수정시간 \t\t\t 글 조회수");
+		System.out.println("글 번호 \t 글 제목 \t 글 내용 \t 글 작성자 \t 글 조회수");
 
 		for (int i = list_search.size() - 1; i >= 0; i--) {
 			Article article = list_search.get(i);
-			System.out.printf("%d \t\t %s \t\t %s \t\t %s \t\t %s \t\t %d\n", article.getArticle_number(),
-					article.getTitle(), article.getBody(),
-					article.getWrite_time().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-					article.getUpdate_time().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-					article.getView());
+			System.out.printf("%d \t\t %s \t %s \t %s \t\t %d\n", article.getArticle_number(),
+					article.getTitle(), article.getBody(), article.getWriter(), article.getView());
 		}
 
 	}
@@ -100,6 +103,7 @@ public class ArticleController extends Controller {
 		System.out.printf("글 번호 : %d\n", found_article.getArticle_number());
 		System.out.printf("글 제목 : %s\n", found_article.getTitle());
 		System.out.printf("글 내용 : %s\n", found_article.getBody());
+		System.out.printf("글 작성자 : %s\n", found_article.getWriter());
 		System.out.printf("글 작성시간 : %s\n",
 				found_article.getWrite_time().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		System.out.printf("글 수정시간 : %s\n",
@@ -108,7 +112,12 @@ public class ArticleController extends Controller {
 
 	}
 
-	private void article_modify() {
+	private void article_modify(Member login_member) {
+		if (login_member == null) {
+			System.out.println("글수정은 로그인이후에 사용할 수 있습니다.");
+			return;
+		}
+		
 		int num = this.getNum(cmd);
 		Article found_article = this.getArticle(num);
 
@@ -119,6 +128,11 @@ public class ArticleController extends Controller {
 			return;
 		}
 
+		if (!login_member.getName().equals(found_article.getWriter())) {
+			System.out.println("글수정은 글작성자만 가능합니다.");
+			return;
+		}
+		
 		String[] title_body = this.getTitleBody();
 
 		found_article.setTitle(title_body[0]);
@@ -129,7 +143,12 @@ public class ArticleController extends Controller {
 
 	}
 
-	private void article_delete() {
+	private void article_delete(Member login_member) {
+		if (login_member == null) {
+			System.out.println("글삭제는 로그인이후에 사용할 수 있습니다.");
+			return;
+		}
+		
 		int num = this.getNum(cmd);
 		Article found_article = this.getArticle(num);
 
@@ -138,6 +157,11 @@ public class ArticleController extends Controller {
 			return;
 		} else if (num == 0)
 			return;
+		
+		if (!login_member.getName().equals(found_article.getWriter())) {
+			System.out.println("글삭제는 글작성자만 가능합니다.");
+			return;
+		}
 
 		articles.remove(found_article);
 		System.out.println(num + "번 글을 삭제하였습니다.");
@@ -207,11 +231,10 @@ public class ArticleController extends Controller {
 		return result;
 	}
 
-
 	@Override
 	public void test_data() {
 		for (int i = 1; i <= 5; i++)
-			articles.add(new Article((last_id++), "제목 " + i, "내용 " + i, i * 10));
+			articles.add(new Article((last_id++), "제목 " + i, "내용 " + i, "유저" + i, i * 10));
 
 		System.out.println("테스트 게시글 5개 생성 완료");
 	}

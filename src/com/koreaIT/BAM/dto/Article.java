@@ -11,6 +11,7 @@ public class Article {
 	private LocalDateTime view_time = Util.getDateStr();
 	private String title;
 	private String body;
+	private String writer;
 	private LocalDateTime write_time;
 	private LocalDateTime update_time;
 
@@ -54,6 +55,14 @@ public class Article {
 		this.body = body;
 	}
 
+	public String getWriter() {
+		return writer;
+	}
+
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+
 	public LocalDateTime getWrite_time() {
 		return write_time;
 	}
@@ -70,11 +79,12 @@ public class Article {
 		this.update_time = update_time;
 	}
 
-	public Article(int article_number, String title, String body, int view) {
+	public Article(int article_number, String title, String body, String writer, int view) {
 		this.article_number = article_number;
 		this.title = title;
 		this.body = body;
 		this.view = view;
+		this.writer = writer;
 		this.write_time = Util.getDateStr();
 		this.update_time = Util.getDateStr();
 	}
