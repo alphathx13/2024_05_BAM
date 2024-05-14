@@ -7,21 +7,20 @@ import com.koreaIT.BAM.controller.*;
 public class App {
 
 	public void run() {
-		String cmd;
-
 		System.out.println("== 프로그램 시작 ==");
 
 		Scanner sc = new Scanner(System.in);
 
 		MemberController memberController = new MemberController(sc);
 		memberController.test_data();
-
 		ArticleController articleController = new ArticleController(sc);
 		articleController.test_data();
 
 		while (true) {
-			if (memberController.getLogin_member() != null)
-				System.out.printf("%s - 명령어) : ", memberController.getLogin_member().getName());
+			String cmd;
+
+			if (Controller.login_member != null)
+				System.out.printf("%s - 명령어) : ", Controller.login_member.getName());
 			else
 				System.out.print("명령어) : ");
 
@@ -35,6 +34,14 @@ public class App {
 			String controller_name = cmds[0];
 			String method_name = cmds[1];
 
+			if (Controller.is_login() == false && (method_name.equals("write") || method_name.equals("modify") || method_name.equals("delete")) || method_name.equals("logout")) {
+				System.out.println("해당 기능은 로그인이 필요합니다.");
+				continue;
+			} else if (Controller.is_login() == true && (method_name.equals("login") || method_name.equals("join"))) {
+				System.out.println("해당 기능은 로그인 상태로 사용할 수 없습니다.");
+				continue;
+			}
+
 			Controller controller = null;
 
 			if (controller_name.equals("article")) {
@@ -46,54 +53,11 @@ public class App {
 				continue;
 			}
 
-			controller.cmd_check(cmd, method_name, memberController.getLogin_member());
+			controller.cmd_check(cmd, method_name);
 
-//			String[] cmds = input(sc);
-//
-//			Controller controller = null;
-//			
-//			if (cmds[0].equals("exit")) {
-//				break;
-//			} else if (cmds[0].equals("article")) {
-//				controller = articleController;
-//			} else if (cmds[0].equals("member")) {
-//				controller = memberController;
-//			} else {
-//				System.out.println("명령어를 다시 입력해 주세요.");
-//				continue;
-//			}
-//			
-//			controller.cmd_check(cmds[1], cmds[2]);
 		}
 
 		sc.close();
 		System.out.println("== 프로그램 종료 ==");
 	}
-
-//	private String[] input(Scanner sc) {
-//		while (true) {
-//			boolean error = false;
-//			
-//			System.out.print("명령어) : ");
-//			String cmd = sc.nextLine();
-//			String[] cmds = cmd.trim().split(" ");
-//
-//			for (int i = 2; i < cmds.length - 1; i++) {
-//				if (!cmds[i].equals("")) {
-//					error = true;
-//					break;
-//				}
-//			}
-//
-//			if (!cmds[cmds.length - 1].chars().allMatch(Character::isDigit))
-//				error = true;
-//
-//			if (error == true) {
-//				System.out.println("명령어를 다시 입력해주세요.");
-//				continue;
-//			}
-//
-//			return cmds;
-//		}
-//	}
 }

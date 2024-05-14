@@ -2,29 +2,23 @@ package com.koreaIT.BAM.controller;
 
 import java.util.List;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.koreaIT.BAM.container.Container;
 import com.koreaIT.BAM.dto.Member;
 
 public class MemberController extends Controller {
-	private Member login_member;
 	private List<Member> members;
 
 	public MemberController(Scanner sc) {
-		this.login_member = null;
 		this.sc = sc;
 		this.last_id = 1;
-		this.members = new ArrayList<>();
+		this.members = Container.members;
 	}	
 
-	public Member getLogin_member() {
-		return login_member;
-	}
-
 	@Override
-	public void cmd_check(String cmd, String method_name, Member login_member) {
-
+	public void cmd_check(String cmd, String method_name) {
+	
 		switch (method_name) {
 		case "join":
 			this.member_join();
@@ -44,11 +38,6 @@ public class MemberController extends Controller {
 	}
 	
 	private void login() {
-		if (login_member != null) {
-			System.out.printf("이미 '%s'님이 로그인 되어있습니다.\n", login_member);
-			return;
-		}
-		
 		String input_id;
 		String input_pass;
 
@@ -61,7 +50,7 @@ public class MemberController extends Controller {
 			if (member.getId().equals(input_id)) {
 				if (member.getPass().equals(input_pass)) {
 					System.out.println(member.getName() + "님 로그인을 환영합니다.");
-					login_member = member;
+					Controller.login_member = member;
 					return;
 				} else {
 					System.out.println("암호가 일치하지 않습니다.");
@@ -75,7 +64,7 @@ public class MemberController extends Controller {
 	
 	private void logout() {
 		System.out.printf("%s님이 로그아웃 되었습니다.\n", login_member.getName());
-		login_member = null;
+		Controller.login_member = null;
 	}
 
 	public void member_join() {
