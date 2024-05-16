@@ -1,20 +1,14 @@
 package com.koreaIT.BAM.controller;
 
-import java.util.List;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import com.koreaIT.BAM.container.Container;
-import com.koreaIT.BAM.dto.Member;
 import com.koreaIT.BAM.service.MemberService;
 
 public class MemberController extends Controller {
-	private List<Member> members;
 	private MemberService memberService;
 
 	public MemberController(Scanner sc) {
 		this.sc = sc;
-		this.members = Container.members;
 		memberService = new MemberService();
 	}	
 
@@ -48,20 +42,7 @@ public class MemberController extends Controller {
 		System.out.print("비밀번호 ) ");
 		input_pass = sc.nextLine().trim();
 
-		for (Member member : members) {
-			if (member.getId().equals(input_id)) {
-				if (member.getPass().equals(input_pass)) {
-					System.out.println(member.getName() + "님 로그인을 환영합니다.");
-					Controller.login_member = member;
-					return;
-				} else {
-					System.out.println("암호가 일치하지 않습니다.");
-					return;
-				}
-			}
-		}
-		
-		System.out.println("해당 ID는 존재하지 않습니다. 회원가입을 해주세요.");
+		memberService.login(input_id, input_pass);	
 	}
 	
 	private void logout() {
@@ -134,19 +115,7 @@ public class MemberController extends Controller {
 	}
 
 	private void member_list() {
-		if (members.size() == 0) {
-			System.out.println("회원이 존재하지 않습니다.");
-			return;
-		}
-
-		System.out.println("회원 번호 \t 회원 아이디 \t 회원 이름 \t 회원 가입시간");
-
-		for (int i = members.size() - 1; i >= 0; i--) {
-			Member member = members.get(i);
-			System.out.printf("%d \t\t %s \t\t %s \t\t %s\n", member.getMember_number(), member.getId(),
-					member.getName(), member.getReg_time().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		}
-
+		memberService.member_list();
 	}
 
 	@Override
