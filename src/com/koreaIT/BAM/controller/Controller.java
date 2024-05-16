@@ -5,7 +5,6 @@ import java.util.Scanner;
 import com.koreaIT.BAM.dto.Member;
 
 public abstract class Controller {
-	public int last_id;
 	public String cmd;
 	public Scanner sc;
 	public static Member login_member;

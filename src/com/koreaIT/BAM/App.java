@@ -34,12 +34,23 @@ public class App {
 			String controller_name = cmds[0];
 			String method_name = cmds[1];
 
-			if (Controller.is_login() == false && (method_name.equals("write") || method_name.equals("modify") || method_name.equals("delete")) || method_name.equals("logout")) {
-				System.out.println("해당 기능은 로그인이 필요합니다.");
-				continue;
-			} else if (Controller.is_login() == true && (method_name.equals("login") || method_name.equals("join"))) {
-				System.out.println("해당 기능은 로그인 상태로 사용할 수 없습니다.");
-				continue;
+			switch (controller_name + "/" + method_name) {
+			case "article/write":
+			case "article/modify":
+			case "article/delete":
+			case "member/logout":
+				if (Controller.is_login() == false) {
+					System.out.println("로그인을 해야합니다.");
+					continue;
+				}
+				break;
+			case "member/join":
+			case "member/login":
+				if (Controller.is_login()) {
+					System.out.println("로그아웃을 해야합니다.");
+					continue;
+				}
+				break;
 			}
 
 			Controller controller = null;

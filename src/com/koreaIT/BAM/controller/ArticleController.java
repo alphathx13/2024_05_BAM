@@ -8,17 +8,19 @@ import java.util.ArrayList;
 import com.koreaIT.BAM.container.Container;
 import com.koreaIT.BAM.dto.Article;
 import com.koreaIT.BAM.dto.Member;
+import com.koreaIT.BAM.service.ArticleService;
 import com.koreaIT.BAM.util.Util;
 
 public class ArticleController extends Controller {
 	private List<Article> articles;
 	private List<Member> members;
+	private ArticleService articleService;
 
 	public ArticleController(Scanner sc) {
 		this.sc = sc;
-		this.last_id = 1;
 		this.articles = Container.articles;
 		this.members = Container.members;
+		articleService = new ArticleService();
 	}
 
 	@Override
@@ -53,12 +55,13 @@ public class ArticleController extends Controller {
 
 	private void article_write() {
 		String[] title_body = this.getTitleBody();
+		
+		int number = articleService.write_article(title_body[0], title_body[1], login_member.getMember_number());
 
-		articles.add(new Article(last_id, title_body[0], title_body[1], login_member.getMember_number(), 0));
-
-		System.out.printf("%d번 글이 생성 되었습니다.\n", this.last_id);
-
-		this.last_id++;
+//		articles.add(new Article(last_id, title_body[0], title_body[1], login_member.getMember_number(), 0));
+//		last_id는 그냥 변수
+		
+		System.out.printf("%d번 글이 생성 되었습니다.\n", number);
 	}
 
 	private void article_list() {
@@ -238,7 +241,7 @@ public class ArticleController extends Controller {
 	@Override
 	public void test_data() {
 		for (int i = 1; i <= 5; i++)
-			articles.add(new Article((last_id++), "제목 " + i, "내용 " + i, ((int) (Math.random() * 100) % 5 + 1), i * 10));
+//			articles.add(new Article((last_id++), "제목 " + i, "내용 " + i, ((int) (Math.random() * 100) % 5 + 1), i * 10));
 
 		System.out.println("테스트 게시글 5개 생성 완료");
 	}

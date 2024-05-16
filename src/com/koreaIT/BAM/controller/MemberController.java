@@ -6,14 +6,16 @@ import java.util.Scanner;
 
 import com.koreaIT.BAM.container.Container;
 import com.koreaIT.BAM.dto.Member;
+import com.koreaIT.BAM.service.MemberService;
 
 public class MemberController extends Controller {
 	private List<Member> members;
+	private MemberService memberService;
 
 	public MemberController(Scanner sc) {
 		this.sc = sc;
-		this.last_id = 1;
 		this.members = Container.members;
+		memberService = new MemberService();
 	}	
 
 	@Override
@@ -72,7 +74,7 @@ public class MemberController extends Controller {
 		String pass = null;
 		String name = null;
 
-		//// id 확인
+		// id 확인
 		while (true) {
 			System.out.print("사용하려는 ID : ");
 			id = sc.nextLine().trim();
@@ -82,7 +84,7 @@ public class MemberController extends Controller {
 				continue;
 			}
 
-			if (id_dp_check(id) == false) {
+			if (memberService.id_dp_check(id) == false) {
 				System.out.println("해당 ID는 이미 존재합니다. 다시 입력해주세요");
 				continue;
 			}
@@ -92,7 +94,7 @@ public class MemberController extends Controller {
 			break;
 		}
 
-		//// 비밀번호 확인
+		// 비밀번호 확인
 		while (true) {
 			System.out.print("사용하려는 비밀번호 : ");
 			pass = sc.nextLine().trim();
@@ -113,7 +115,7 @@ public class MemberController extends Controller {
 			break;
 		}
 
-		//// 이름 확인
+		// 이름 확인
 		while (true) {
 			System.out.print("이름을 입력해주세요 : ");
 			name = sc.nextLine().trim();
@@ -126,19 +128,9 @@ public class MemberController extends Controller {
 			break;
 		}
 
-		members.add(new Member(last_id, id, pass, name));
+		memberService.member_join(id, pass, name);
 
 		System.out.printf("[%s]번 회원님이 가입되었습니다.\n", id);
-		last_id++;
-	}
-
-	private boolean id_dp_check(String id) {
-		for (Member member : members) {
-			if (member.getId().equals(id)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private void member_list() {
@@ -160,7 +152,7 @@ public class MemberController extends Controller {
 	@Override
 	public void test_data() {
 		for (int i = 1; i <= 5; i++)
-			members.add(new Member((last_id++), "user" + i, "user" + i, "유저" + i));
+			memberService.member_join("user" + i, "user" + i, "유저" + i);
 
 		System.out.println("테스트 멤버 5명 생성 완료");
 	}
